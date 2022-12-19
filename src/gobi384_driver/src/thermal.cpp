@@ -113,8 +113,8 @@ int main(int argc, char **argv)
                     //normalize(thermal_img, img8, 0, 255, NORM_MINMAX);
                     //convertScaleAbs(img8, img8);
                     //medianBlur(img8,img8,3);
-                    cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(3.0, cv::Size(8, 8));
-                    clahe->apply(img8, img8);
+                    // cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(3.0, cv::Size(8, 8));
+                    // clahe->apply(img8, img8);
                     //cv::equalizeHist(img8,img8);
                         //   imshow("1",thermal_img);
                         // waitKey(1);
