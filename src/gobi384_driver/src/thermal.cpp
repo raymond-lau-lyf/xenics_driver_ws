@@ -25,6 +25,11 @@
 #include "XCamera.h"
 #include "XFilters.h"
 
+
+#include "sensor_msgs/Image.h"
+#include "sensor_msgs/CompressedImage.h"
+#include "sensor_msgs/image_encodings.h"
+
 using namespace std;
 using namespace cv;
 using namespace std::chrono;
@@ -37,6 +42,7 @@ tm last_tm;
 int timestamp_modifier_i;
 char timestamp_modifier_c;
 cv::Mat thermal_img, thermal_img_inv, color_img;
+image_transport::Publisher image_pub;
 ros::Publisher pub_image,pub_image16;
 
 /*
@@ -69,6 +75,8 @@ int main(int argc, char **argv)
     dword frameSize = 0; // The size in bytes of the raw image.
     ros::init(argc, argv, "imageconvert"); 
     ros::NodeHandle nh;   
+    image_transport::ImageTransport it(nh);
+    image_pub = it.advertise("/convert_image",100); 
     pub_image = nh.advertise<sensor_msgs::Image>("/convert_image8",100);  
     pub_image16 = nh.advertise<sensor_msgs::Image>("/convert_image16",100);  
 
@@ -96,7 +104,8 @@ int main(int argc, char **argv)
                 // Initialize the 16-bit buffer.
                 frameBuffer = new word[frameSize / 2];
                     // ... grab a frame from the camera.
-                printf("Grabbing a frame.\n");
+                // printf("Grabbing a frame.\n");
+                ROS_INFO("Grabbing a frame.\n");
                 if ((errorCode = XC_GetFrame(handle, FT_NATIVE, XGF_Blocking, frameBuffer, frameSize)) != I_OK)
                 {
                     printf("Problem while fetching frame, errorCode %lu", errorCode);
@@ -113,15 +122,18 @@ int main(int argc, char **argv)
                     //normalize(thermal_img, img8, 0, 255, NORM_MINMAX);
                     //convertScaleAbs(img8, img8);
                     //medianBlur(img8,img8,3);
-                    // cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(3.0, cv::Size(8, 8));
-                    // clahe->apply(img8, img8);
+                    cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(3.0, cv::Size(8, 8));
+                    clahe->apply(img8, img8);
                     //cv::equalizeHist(img8,img8);
                         //   imshow("1",thermal_img);
                         // waitKey(1);
                     ros::Time t = ros::Time::now();
                     sensor_msgs::ImagePtr output_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
                     output_msg->header.stamp = t;
-                    pub_image.publish(output_msg);                    
+                    pub_image.publish(output_msg);         
+
+                    image_pub.publish(output_msg);
+
                     sensor_msgs::ImagePtr msg_thermal = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
                     msg_thermal->header.stamp = t;
                     pub_image16.publish(msg_thermal);
