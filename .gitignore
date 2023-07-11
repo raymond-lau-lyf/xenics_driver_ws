@@ -63,3 +63,4 @@ CATKIN_IGNORE
 /gobi_slam/src/VINS-Mono-master/*
 
 .zip
+.catkin_tools
