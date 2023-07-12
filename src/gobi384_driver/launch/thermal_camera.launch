@@ -2,7 +2,7 @@
 <!-- -->
 <launch>
     <!--Launch the visualization-->
-    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find thermal_camera)/config/rviz.rviz"/>
+    <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find thermal_camera)/config/rviz.rviz"/> -->
 
     <!-- Launch the node   -->
     <node pkg="thermal_camera" type="thermal_camera" name="thermal_camera" required="true" output="screen"/>
