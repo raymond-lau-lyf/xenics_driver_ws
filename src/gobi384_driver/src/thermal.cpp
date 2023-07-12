@@ -2,10 +2,10 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"*/
 
-#include "stdio.h" // C Standard Input/Output library.
+#include "stdio.h"   // C Standard Input/Output library.
 #include "XCamera.h" // Xeneth SDK main header.
-#include <iostream>   // std::cout
-#include <string>     // std::string, std::to_string
+#include <iostream>  // std::cout
+#include <string>    // std::string, std::to_string
 #include <chrono>
 #include <ctime>
 #include <cv_bridge/cv_bridge.h>
@@ -25,7 +25,6 @@
 #include "XCamera.h"
 #include "XFilters.h"
 
-
 #include "sensor_msgs/Image.h"
 #include "sensor_msgs/CompressedImage.h"
 #include "sensor_msgs/image_encodings.h"
@@ -42,8 +41,8 @@ tm last_tm;
 int timestamp_modifier_i;
 char timestamp_modifier_c;
 cv::Mat thermal_img, thermal_img_inv, color_img;
-image_transport::Publisher image_pub;
-ros::Publisher pub_image,pub_image16;
+// image_transport::Publisher image_pub;
+ros::Publisher pub_image, pub_image_clahe, pub_image16;
 
 /*
 //NBL: ROS Compliance
@@ -57,7 +56,7 @@ unsigned int imageCnt;
 void chatterCallback(const std_msgs::String::ConstPtr& msg)
 {
     record = *msg;
- 
+
     //ROS_INFO("I heard: [%s]", msg->data.c_str());
 }
 */
@@ -65,20 +64,61 @@ void chatterCallback(const std_msgs::String::ConstPtr& msg)
 int AcquireImage()
 {
 }*/
+string type2str(int type)
+{
+    string r;
 
-int main(int argc, char **argv) 
+    uchar depth = type & CV_MAT_DEPTH_MASK;
+    uchar chans = 1 + (type >> CV_CN_SHIFT);
+
+    switch (depth)
+    {
+    case CV_8U:
+        r = "8U";
+        break;
+    case CV_8S:
+        r = "8S";
+        break;
+    case CV_16U:
+        r = "16U";
+        break;
+    case CV_16S:
+        r = "16S";
+        break;
+    case CV_32S:
+        r = "32S";
+        break;
+    case CV_32F:
+        r = "32F";
+        break;
+    case CV_64F:
+        r = "64F";
+        break;
+    default:
+        r = "User";
+        break;
+    }
+
+    r += "C";
+    r += (chans + '0');
+
+    return r;
+}
+
+int main(int argc, char **argv)
 {
     // Variables
-    XCHANDLE handle = 0; // Handle to the camera
+    XCHANDLE handle = 0;   // Handle to the camera
     ErrCode errorCode = 0; // Used to store returned errorCodes from the SDK functions.
     word *frameBuffer = 0; // 16-bit buffer to store the capture frame.
-    dword frameSize = 0; // The size in bytes of the raw image.
-    ros::init(argc, argv, "imageconvert"); 
-    ros::NodeHandle nh;   
+    dword frameSize = 0;   // The size in bytes of the raw image.
+    ros::init(argc, argv, "thermalimagepublisher");
+    ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
-    image_pub = it.advertise("/convert_image",100); 
-    pub_image = nh.advertise<sensor_msgs::Image>("/convert_image8",100);  
-    pub_image16 = nh.advertise<sensor_msgs::Image>("/convert_image16",100);  
+    // image_pub = it.advertise("/convert_image", 100);
+    pub_image = nh.advertise<sensor_msgs::Image>("/convert_image8", 100);
+    pub_image_clahe = nh.advertise<sensor_msgs::Image>("/convert_image8_clahe", 100);
+    pub_image16 = nh.advertise<sensor_msgs::Image>("/convert_image16", 100);
 
     // Open a connection to the first detected camera by using connection string cam://0
     printf("Opening connection to cam://0\n");
@@ -86,8 +126,8 @@ int main(int argc, char **argv)
 
     // When the connection is initialised, ...
 
-    if(XC_IsInitialised(handle))
-    {      
+    if (XC_IsInitialised(handle))
+    {
         // ... start capturing
         printf("Start capturing.\n");
         if ((errorCode = XC_StartCapture(handle)) != I_OK)
@@ -96,55 +136,70 @@ int main(int argc, char **argv)
         }
         else if (XC_IsCapturing(handle)) // When the camera is capturing ...
         {
-            while(ros::ok())
+            while (ros::ok())
             {
                 // Determine native framesize.
                 frameSize = XC_GetFrameSize(handle);
 
                 // Initialize the 16-bit buffer.
                 frameBuffer = new word[frameSize / 2];
-                    // ... grab a frame from the camera.
+                // ... grab a frame from the camera.
                 // printf("Grabbing a frame.\n");
                 ROS_INFO("Grabbing a frame.\n");
                 if ((errorCode = XC_GetFrame(handle, FT_NATIVE, XGF_Blocking, frameBuffer, frameSize)) != I_OK)
                 {
                     printf("Problem while fetching frame, errorCode %lu", errorCode);
-                }else
+                }
+                else
                 {
                     int h = XC_GetHeight(handle);
                     int w = XC_GetWidth(handle);
                     thermal_img =
                         cv::Mat(h, w, CV_16UC1, frameBuffer); /*convert to OpenCV*/
                     Mat img8;
-                    thermal_img.convertTo(img8, CV_8UC1,1 / 256.0); // convert image to 8bit
-
-                    //Mat img8;
-                    //normalize(thermal_img, img8, 0, 255, NORM_MINMAX);
-                    //convertScaleAbs(img8, img8);
-                    //medianBlur(img8,img8,3);
-                    cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(3.0, cv::Size(8, 8));
-                    clahe->apply(img8, img8);
-                    //cv::equalizeHist(img8,img8);
-                        //   imshow("1",thermal_img);
-                        // waitKey(1);
+                    string ty = type2str(thermal_img.type());
+                    printf("Matrix: %s %dx%d \n", ty.c_str(), thermal_img.cols, thermal_img.rows);
+                    thermal_img.convertTo(img8, CV_8UC1, 1 / 256.0); // convert image to 8bit
+                    // Mat img8;
+                    // normalize(thermal_img, img8, 0, 255, NORM_MINMAX);
+                    // convertScaleAbs(img8, img8);
+                    // medianBlur(img8,img8,3);
+                    cv::Mat img8_clahe;
+                     cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(3.0, cv::Size(8, 8));
+                     clahe->apply(img8, img8_clahe);
+                    // cv::equalizeHist(img8,img8);
+                    //    imshow("1",thermal_img);
+                    //  waitKey(1);
                     ros::Time t = ros::Time::now();
                     sensor_msgs::ImagePtr output_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
                     output_msg->header.stamp = t;
-                    pub_image.publish(output_msg);         
 
-                    image_pub.publish(output_msg);
+                    sensor_msgs::ImagePtr output_msg_clahe = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8_clahe).toImageMsg();
+                    output_msg_clahe->header.stamp = t;
+                    
+                    static long long iter_num;
+                    if (iter_num % 3 == 0)
+                    {
+                        pub_image_clahe.publish(output_msg_clahe);
+                        pub_image.publish(output_msg);
+                    }
+                    iter_num++;
+
+
+
+                    // image_pub.publish(output_msg);
 
                     sensor_msgs::ImagePtr msg_thermal = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
                     msg_thermal->header.stamp = t;
                     pub_image16.publish(msg_thermal);
                     if (frameBuffer != 0)
                     {
-                        delete [] frameBuffer;
+                        delete[] frameBuffer;
                         frameBuffer = 0;
                     }
                 }
             }
-            if(XC_IsCapturing(handle))
+            if (XC_IsCapturing(handle))
             {
                 // ... stop capturing.
                 printf("Stop capturing.\n");
@@ -164,14 +219,14 @@ int main(int argc, char **argv)
             printf("Clearing buffers.\n");
             if (frameBuffer != 0)
             {
-                delete [] frameBuffer;
+                delete[] frameBuffer;
                 frameBuffer = 0;
             }
         }
-    else
-    {
-        printf("Initialization failed\n");
-    }
+        else
+        {
+            printf("Initialization failed\n");
+        }
     }
     return 0;
 }
