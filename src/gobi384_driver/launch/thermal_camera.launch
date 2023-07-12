@@ -1,8 +1,9 @@
-<?xml version="1.0"?>
-<!-- -->
 <launch>
     <!--Launch the visualization-->
-    <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find thermal_camera)/config/rviz.rviz"/> -->
+    <arg name="viz" default="false" doc="whether to run a rviz"/>
+
+    <node if="$(arg viz)" pkg="rviz" type="rviz" name="rviz" args="-d $(find thermal_camera)/config/rviz.rviz"/>
+
 
     <!-- Launch the node   -->
     <node pkg="thermal_camera" type="thermal_camera" name="thermal_camera" required="true" output="screen"/>
