@@ -165,8 +165,8 @@ int main(int argc, char **argv)
                     // convertScaleAbs(img8, img8);
                     // medianBlur(img8,img8,3);
                     cv::Mat img8_clahe;
-                     cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(3.0, cv::Size(8, 8));
-                     clahe->apply(img8, img8_clahe);
+                    cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(1.0, cv::Size(32, 32));
+                    clahe->apply(img8, img8_clahe);
                     // cv::equalizeHist(img8,img8);
                     //    imshow("1",thermal_img);
                     //  waitKey(1);
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
                     output_msg_clahe->header.stamp = t;
                     
                     static long long iter_num;
-                    if (iter_num % 3 == 0)
+                    if (iter_num % 4 == 0)
                     {
                         pub_image_clahe.publish(output_msg_clahe);
                         pub_image.publish(output_msg);
