@@ -170,28 +170,27 @@ int main(int argc, char **argv)
                     // cv::equalizeHist(img8,img8);
                     //    imshow("1",thermal_img);
                     //  waitKey(1);
+
                     ros::Time t = ros::Time::now();
+                    
                     sensor_msgs::ImagePtr output_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
                     output_msg->header.stamp = t;
 
                     sensor_msgs::ImagePtr output_msg_clahe = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8_clahe).toImageMsg();
                     output_msg_clahe->header.stamp = t;
-                    
+
+                    sensor_msgs::ImagePtr msg_thermal = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
+                    msg_thermal->header.stamp = t;
+
                     static long long iter_num;
                     if (iter_num % 4 == 0)
                     {
                         pub_image_clahe.publish(output_msg_clahe);
                         pub_image.publish(output_msg);
+                        pub_image16.publish(msg_thermal);
                     }
                     iter_num++;
 
-
-
-                    // image_pub.publish(output_msg);
-
-                    sensor_msgs::ImagePtr msg_thermal = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
-                    msg_thermal->header.stamp = t;
-                    pub_image16.publish(msg_thermal);
                     if (frameBuffer != 0)
                     {
                         delete[] frameBuffer;
