@@ -23,6 +23,7 @@
   <Setting brief="DeviceScanType" value="0" unit="" origin="camera" type="4354"/>
   <Setting brief="AcquisitionMode" value="0" unit="" origin="camera" type="258"/>
   <Setting brief="ExposureTimeAbs" value="25" unit="" origin="camera" type="769"/>
+  <Setting brief="IntegrationTime" value="30" unit="" origin="camera" type="769"/>
   <Setting brief="MinimumFrameTime" value="0" unit="" origin="camera" type="769"/>
   <Setting brief="TriggerDirection" value="1" unit="" origin="camera" type="770"/>
   <Setting brief="TriggerInMode" value="0" unit="" origin="camera" type="770"/>

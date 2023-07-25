@@ -134,22 +134,13 @@ int main(int argc, char **argv)
     if (XC_IsInitialised(handle))
     {
         // ... start capturing
-            // Load settings.
-        printf("Load settings.\n");
 
         // // Save settings
         // printf("Saving settings.\n");
         // XC_SaveSettings(handle, settings);
 
-        // XC_LoadSettings(handle, settings);
+        XC_LoadSettings(handle, settings);
         printf("Load Settings\n");
-
-        long oldIntegrationTime,newIntegrationTime=25;
-        errorCode = XC_GetPropertyValueL(handle, "IntegrationTime", &oldIntegrationTime);
-        errorCode = XC_SetPropertyValueL(handle, "IntegrationTime", newIntegrationTime, "");
-        long ExposureTimeAbs=25;
-        XC_SetPropertyValueL(handle, "ExposureTimeAbs", ExposureTimeAbs, "");
-        printf("ExposureTimeAbs is %d\n",ExposureTimeAbs);
 
         printf("Start capturing.\n");
         if ((errorCode = XC_StartCapture(handle)) != I_OK)
