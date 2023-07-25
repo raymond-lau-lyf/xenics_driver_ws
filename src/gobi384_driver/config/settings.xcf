@@ -3,8 +3,8 @@
   <Setting brief="DeviceGFIDVoltage" value="2.6" unit="" origin="camera" type="769"/>
   <Setting brief="DeviceGSKVoltage" value="1.904835" unit="" origin="camera" type="769"/>
   <Setting brief="DeviceGain" value="3" unit="" origin="camera" type="770"/>
-  <Setting brief="DeviceTemperature" value="48.77" unit="" origin="camera" type="257"/>
-  <Setting brief="DeviceCameraTemperature" value="43.12" unit="" origin="camera" type="257"/>
+  <Setting brief="DeviceTemperature" value="46.43" unit="" origin="camera" type="257"/>
+  <Setting brief="DeviceCameraTemperature" value="40.93" unit="" origin="camera" type="257"/>
   <Setting brief="DeviceVendorName" value="Xenics" unit="" origin="camera" type="4368"/>
   <Setting brief="DeviceModelName" value="Gobi+ 640 GigE" unit="" origin="camera" type="4368"/>
   <Setting brief="DeviceManufacturerInfo" value="F122" unit="" origin="camera" type="4368"/>
@@ -90,7 +90,7 @@
   <Setting brief="GevCurrentIPConfigurationLLA" value="1" unit="" origin="camera" type="260"/>
   <Setting brief="GevCurrentIPConfigurationDHCP" value="1" unit="" origin="camera" type="772"/>
   <Setting brief="GevCurrentIPConfigurationPersistentIP" value="0" unit="" origin="camera" type="772"/>
-  <Setting brief="GevCurrentIPAddress" value="169.254.180.120" unit="" origin="camera" type="272"/>
+  <Setting brief="GevCurrentIPAddress" value="169.254.65.214" unit="" origin="camera" type="272"/>
   <Setting brief="GevCurrentSubnetMask" value="255.255.0.0" unit="" origin="camera" type="272"/>
   <Setting brief="GevCurrentDefaultGateway" value="0.0.0.0" unit="" origin="camera" type="272"/>
   <Setting brief="GevPersistentIPAddress" value="192.168.1.166" unit="" origin="camera" type="528"/>
@@ -118,11 +118,11 @@
   <Setting brief="GevSCPSFireTestPacket" value="0" unit="" origin="camera" type="772"/>
   <Setting brief="GevSCPSDoNotFragment" value="0" unit="" origin="camera" type="772"/>
   <Setting brief="GevSCPSBigEndian" value="0" unit="" origin="camera" type="260"/>
-  <Setting brief="GevSCPSPacketSize" value="608" unit="" origin="camera" type="257"/>
+  <Setting brief="GevSCPSPacketSize" value="624" unit="" origin="camera" type="257"/>
   <Setting brief="GevSCPD" value="0" unit="" origin="camera" type="769"/>
   <Setting brief="GevSCDA" value="0.0.0.0" unit="" origin="camera" type="784"/>
   <Setting brief="XGIGEV_PacketDelay" value="0" unit="" origin="camera" type="513"/>
-  <Setting brief="XGIGEV_PacketSize" value="608" unit="bytes" origin="camera" type="769"/>
+  <Setting brief="XGIGEV_PacketSize" value="624" unit="bytes" origin="camera" type="769"/>
   <Setting brief="XGIGEV_RetryCount" value="3" unit="attempts" origin="camera" type="513"/>
   <Setting brief="XGIGEV_AckTimeout" value="200" unit="ms" origin="camera" type="513"/>
   <Setting brief="XGIGEV_StreamTimeout" value="100" unit="ms" origin="camera" type="513"/>
