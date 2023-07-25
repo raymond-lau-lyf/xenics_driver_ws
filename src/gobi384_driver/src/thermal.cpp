@@ -136,8 +136,18 @@ int main(int argc, char **argv)
         // ... start capturing
             // Load settings.
         printf("Load settings.\n");
-        XC_LoadSettings(handle, settings);
 
+        // // Save settings
+        // printf("Saving settings.\n");
+        // XC_SaveSettings(handle, settings);
+
+        long oldIntegrationTime,newIntegrationTime=25;
+        errorCode = XC_GetPropertyValueL(handle, "IntegrationTime", &oldIntegrationTime);
+        errorCode = XC_SetPropertyValueL(handle, "IntegrationTime", newIntegrationTime, "");
+        XC_LoadSettings(handle, settings);
+        long ExposureTimeAbs;
+        XC_SetPropertyValueL(handle, "ExposureTimeAbs", ExposureTimeAbs, "");
+        printf("ExposureTimeAbs is %d\n",ExposureTimeAbs);
         printf("Start capturing.\n");
         if ((errorCode = XC_StartCapture(handle)) != I_OK)
         {
@@ -154,7 +164,7 @@ int main(int argc, char **argv)
                 frameBuffer = new word[frameSize / 2];
                 // ... grab a frame from the camera.
                 // printf("Grabbing a frame.\n");
-                ROS_INFO("Grabbing a frame.\n");
+                ROS_INFO("Grabbing a frame.\r");
                 if ((errorCode = XC_GetFrame(handle, FT_NATIVE, XGF_Blocking, frameBuffer, frameSize)) != I_OK)
                 {
                     printf("Problem while fetching frame, errorCode %lu", errorCode);
@@ -167,7 +177,7 @@ int main(int argc, char **argv)
                         cv::Mat(h, w, CV_16UC1, frameBuffer); /*convert to OpenCV*/
                     Mat img8;
                     string ty = type2str(thermal_img.type());
-                    printf("Matrix: %s %dx%d \n", ty.c_str(), thermal_img.cols, thermal_img.rows);
+                    // printf("Matrix: %s %dx%d \n", ty.c_str(), thermal_img.cols, thermal_img.rows);
                     thermal_img.convertTo(img8, CV_8UC1, 1 / 256.0); // convert image to 8bit
                     // Mat img8;
                     // normalize(thermal_img, img8, 0, 255, NORM_MINMAX);
