@@ -124,11 +124,20 @@ int main(int argc, char **argv)
     printf("Opening connection to cam://0\n");
     handle = XC_OpenCamera("cam://0");
 
+    std::string config_file;
+    nh.getParam("config_file", config_file);
+    const char *settings = config_file.c_str();
+
+
     // When the connection is initialised, ...
 
     if (XC_IsInitialised(handle))
     {
         // ... start capturing
+            // Load settings.
+        printf("Load settings.\n");
+        XC_LoadSettings(handle, settings);
+
         printf("Start capturing.\n");
         if ((errorCode = XC_StartCapture(handle)) != I_OK)
         {

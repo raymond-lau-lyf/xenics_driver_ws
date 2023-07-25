@@ -7,5 +7,6 @@
 
     <!-- Launch the node   -->
     <node pkg="thermal_camera" type="thermal_camera" name="thermal_camera" required="true" output="screen"/>
+    <param name="config_file" type="string" value="$(find thermal_camera)/config/settings.yaml" />
 
 </launch>

@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <title>Xeneth SDK - Save and Load settings</title>
+        <style type="text/css">
+            body
+            {
+                font-family: Arial;
+                font-size: 10pt;
+            }
+            
+            .tb
+            {
+                border: 1px solid #000000;
+                width: 100%;
+            
+                font-size: 10pt;
+                
+                border-collapse: collapse;
+            }
+            
+            .tb th
+            {
+                color: #FFFFFF;
+                background: #000000;
+            }
+            
+            .tb td
+            {
+                background: #FBFCFD;
+                padding-left: 5px;
+            }
+            
+            .tb .rtitle
+            {
+                font-weight: bold;
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="content">
+            <sub>Supported OS: Windows, Linux</sub>
+            <h2>Description</h2>
+            <p>
+                It is possible to save the properties to a settings, or xcf file. All properties that are marked with the persistent flag will be stored in this file.
+                To check which properties are persistent refer to the <b>Enumerate properties</b> sample where each flag is checked and presented to the user.
+            </p>
+            <h2>Used functions</h2>
+            <p>The following table lists the functions used in this sample:</p>
+            <p>
+                <table class="tb">
+                    <thead> 
+                        <tr>
+                            <th>Function</th> 
+                            <th align="left">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr align="center">
+                            <td valign="top" class="rtitle">XC_OpenCamera</td> 
+                            <td align="left">Opens a connection to the camera specified and returns a handle pointing to the camera. The handle is used in all other functions so keep a reference. </td>
+                        </tr>       
+                        <tr align="center">
+                            <td valign="top" class="rtitle">XC_IsInitialised</td> 
+                            <td align="left">Check if the connection was successfully initialized.</td>
+                        </tr>    
+                        <tr align="center">
+                            <td valign="top" class="rtitle">XC_SaveSettings</td> 
+                            <td align="left">Saves the camera settings to a configuration file, extension used with the Xeneth software is .xcf.</td>
+                        </tr>    
+                        <tr align="center">
+                            <td valign="top" class="rtitle">XC_GetPropertyValueL</td> 
+                            <td align="left">Retrieve a long value from the camera specified by the propertyname.</td>
+                        </tr>    
+                        <tr align="center">
+                            <td valign="top" class="rtitle">XC_LoadSettings </td> 
+                            <td align="left">Saves the camera settings from a configuration file, extension used with the Xeneth software is .xcf.</td>
+                        </tr>          
+                        <tr align="center">
+                            <td valign="top" class="rtitle">XC_CloseCamera</td> 
+                            <td align="left">Closes and cleans up the connection to the camera specified by the handle which was obtained by calling the XC_OpenCamera function.</td>
+                        </tr>                              
+                    </tbody>
+                </table>
+            </p>
+        </div>
+    </body>
+</html>
