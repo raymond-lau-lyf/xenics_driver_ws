@@ -3,8 +3,8 @@
   <Setting brief="DeviceGFIDVoltage" value="2.6" unit="" origin="camera" type="769"/>
   <Setting brief="DeviceGSKVoltage" value="1.904835" unit="" origin="camera" type="769"/>
   <Setting brief="DeviceGain" value="3" unit="" origin="camera" type="770"/>
-  <Setting brief="DeviceTemperature" value="40.54" unit="" origin="camera" type="257"/>
-  <Setting brief="DeviceCameraTemperature" value="35.25" unit="" origin="camera" type="257"/>
+  <Setting brief="DeviceTemperature" value="39.99" unit="" origin="camera" type="257"/>
+  <Setting brief="DeviceCameraTemperature" value="34.75" unit="" origin="camera" type="257"/>
   <Setting brief="DeviceVendorName" value="Xenics" unit="" origin="camera" type="4368"/>
   <Setting brief="DeviceModelName" value="Gobi+ 640 GigE" unit="" origin="camera" type="4368"/>
   <Setting brief="DeviceManufacturerInfo" value="F122" unit="" origin="camera" type="4368"/>
@@ -22,8 +22,8 @@
   <Setting brief="DeviceUserID" value="" unit="" origin="camera" type="4880"/>
   <Setting brief="DeviceScanType" value="0" unit="" origin="camera" type="4354"/>
   <Setting brief="AcquisitionMode" value="0" unit="" origin="camera" type="258"/>
-  <Setting brief="ExposureTimeAbs" value="25" unit="" origin="camera" type="769"/>
-  <Setting brief="MinimumFrameTime" value="0" unit="" origin="camera" type="769"/>
+  <Setting brief="ExposureTimeAbs" value="20" unit="" origin="camera" type="769"/>
+  <Setting brief="MinimumFrameTime" value="10" unit="" origin="camera" type="769"/>
   <Setting brief="TriggerDirection" value="1" unit="" origin="camera" type="770"/>
   <Setting brief="TriggerInMode" value="0" unit="" origin="camera" type="770"/>
   <Setting brief="TriggerInEnable" value="0" unit="" origin="camera" type="770"/>
@@ -56,20 +56,20 @@
   <Setting brief="OffsetControl" value="0" unit="" origin="camera" type="770"/>
   <Setting brief="GainControl" value="0" unit="" origin="camera" type="770"/>
   <Setting brief="AutoModeUpdate" value="0" unit="" origin="camera" type="770"/>
-  <Setting brief="OffsetUsed" value="-8.59375" unit="" origin="camera" type="257"/>
-  <Setting brief="GainUsed" value="48.695313" unit="" origin="camera" type="257"/>
+  <Setting brief="OffsetUsed" value="-18.847656" unit="" origin="camera" type="257"/>
+  <Setting brief="GainUsed" value="74" unit="" origin="camera" type="257"/>
   <Setting brief="ManualModeOffset" value="0" unit="" origin="camera" type="769"/>
-  <Setting brief="ManualModeGain" value="1" unit="" origin="camera" type="769"/>
-  <Setting brief="AutoModeOutputHistogramMidpoint" value="31.445313" unit="" origin="camera" type="769"/>
+  <Setting brief="ManualModeGain" value="0" unit="" origin="camera" type="769"/>
+  <Setting brief="AutoModeOutputHistogramMidpoint" value="27.929688" unit="" origin="camera" type="769"/>
   <Setting brief="AutoModeMaximalGain" value="74" unit="" origin="camera" type="769"/>
-  <Setting brief="AutoModeRegulationSpeed" value="4" unit="" origin="camera" type="769"/>
+  <Setting brief="AutoModeRegulationSpeed" value="10" unit="" origin="camera" type="769"/>
   <Setting brief="OutliersExpressedAs" value="0" unit="" origin="camera" type="770"/>
   <Setting brief="OutliersDark" value="0.976563" unit="" origin="camera" type="769"/>
   <Setting brief="OutliersBright" value="0.976563" unit="" origin="camera" type="769"/>
   <Setting brief="OutliersBrightDisplayColor" value="0" unit="" origin="camera" type="770"/>
   <Setting brief="InputHistogramBegin" value="0" unit="" origin="camera" type="769"/>
-  <Setting brief="InputHistogramMidpoint" value="50" unit="" origin="camera" type="769"/>
-  <Setting brief="InputHistogramEnd" value="100" unit="" origin="camera" type="769"/>
+  <Setting brief="InputHistogramMidpoint" value="128" unit="" origin="camera" type="769"/>
+  <Setting brief="InputHistogramEnd" value="255" unit="" origin="camera" type="769"/>
   <Setting brief="UserSetSelector" value="1" unit="" origin="camera" type="770"/>
   <Setting brief="UserSetDefaultSelector" value="1" unit="" origin="camera" type="770"/>
   <Setting brief="UserSetCurrent" value="1" unit="" origin="camera" type="258"/>
@@ -89,7 +89,7 @@
   <Setting brief="GevCurrentIPConfigurationLLA" value="1" unit="" origin="camera" type="260"/>
   <Setting brief="GevCurrentIPConfigurationDHCP" value="1" unit="" origin="camera" type="772"/>
   <Setting brief="GevCurrentIPConfigurationPersistentIP" value="0" unit="" origin="camera" type="772"/>
-  <Setting brief="GevCurrentIPAddress" value="169.254.89.235" unit="" origin="camera" type="272"/>
+  <Setting brief="GevCurrentIPAddress" value="169.254.61.205" unit="" origin="camera" type="272"/>
   <Setting brief="GevCurrentSubnetMask" value="255.255.0.0" unit="" origin="camera" type="272"/>
   <Setting brief="GevCurrentDefaultGateway" value="0.0.0.0" unit="" origin="camera" type="272"/>
   <Setting brief="GevPersistentIPAddress" value="192.168.1.166" unit="" origin="camera" type="528"/>
@@ -114,7 +114,7 @@
   <Setting brief="GevStreamChannelCount" value="1" unit="" origin="camera" type="257"/>
   <Setting brief="GevStreamChannelSelector" value="0" unit="" origin="camera" type="4353"/>
   <Setting brief="GevSCPInterfaceIndex" value="0" unit="" origin="camera" type="769"/>
-  <Setting brief="GevSCPHostPort" value="54915" unit="hex" origin="camera" type="769"/>
+  <Setting brief="GevSCPHostPort" value="58783" unit="hex" origin="camera" type="769"/>
   <Setting brief="GevSCPSFireTestPacket" value="0" unit="" origin="camera" type="772"/>
   <Setting brief="GevSCPSDoNotFragment" value="0" unit="" origin="camera" type="772"/>
   <Setting brief="GevSCPSBigEndian" value="0" unit="" origin="camera" type="260"/>
@@ -128,8 +128,8 @@
   <Setting brief="XGIGEV_StreamTimeout" value="100" unit="ms" origin="camera" type="513"/>
   <Setting brief="XGIGEV_DropNoFrames" value="0" unit="" origin="camera" type="516"/>
   <Setting brief="XGIGEV_PacketResend" value="1" unit="" origin="camera" type="516"/>
-  <Setting brief="XGIGEV_LostFrames" value="0" unit="frames" origin="camera" type="257"/>
-  <Setting brief="XGIGEV_LostPackets" value="53" unit="packets" origin="camera" type="257"/>
+  <Setting brief="XGIGEV_LostFrames" value="1" unit="frames" origin="camera" type="257"/>
+  <Setting brief="XGIGEV_LostPackets" value="530" unit="packets" origin="camera" type="257"/>
   <Setting brief="XGIGEV_ActionCommandDeviceKey" value="0" unit="hex" origin="camera" type="769"/>
   <Setting brief="XGIGEV_ActionCommandGroupKey" value="0" unit="hex" origin="camera" type="769"/>
   <Setting brief="XGIGEV_ActionCommandGroupMask" value="0" unit="hex" origin="camera" type="769"/>
