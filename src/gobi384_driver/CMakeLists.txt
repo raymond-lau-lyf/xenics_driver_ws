@@ -139,9 +139,15 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
   #${Eigen_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
   /usr/share/xeneth/Include/
 )
+
+link_directories(
+    ${OpenCV_LIBRARY_DIRS}
+)
+
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}

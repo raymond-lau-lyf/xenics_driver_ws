@@ -116,9 +116,9 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
     // image_pub = it.advertise("/convert_image", 100);
-    pub_image = nh.advertise<sensor_msgs::Image>("/convert_image8", 100);
-    pub_image_clahe = nh.advertise<sensor_msgs::Image>("/convert_image8_clahe", 100);
-    pub_image16 = nh.advertise<sensor_msgs::Image>("/convert_image16", 100);
+    pub_image = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image/8bit", 100);
+    pub_image_clahe = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image/8bit_clahe", 100);
+    pub_image16 = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image/16bit", 100);
 
     // Open a connection to the first detected camera by using connection string cam://0
     printf("Opening connection to cam://0\n");
