@@ -1,6 +1,7 @@
 <launch>
     <!--Launch the visualization-->
-    <arg name="viz" default="false" doc="whether to run a rviz"/>
+    <!-- <arg name="viz" default="false" doc="whether to run a rviz"/> -->
+    <arg name="viz" default="true" doc="whether to run a rviz"/>
 
     <node if="$(arg viz)" pkg="rviz" type="rviz" name="rviz" args="-d $(find thermal_camera)/config/rviz.rviz"/>
 
