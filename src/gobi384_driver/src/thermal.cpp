@@ -124,6 +124,12 @@ int main(int argc, char **argv)
     printf("Opening connection to cam://0\n");
     handle = XC_OpenCamera("gev://192.168.1.166");
 
+
+    if (!XC_IsInitialised(handle)) { 
+        printf("Could not open a connection to camera.\n");
+        return -1;
+    }
+
     std::string config_file;
     nh.getParam("config_file", config_file);
     const char *settings = config_file.c_str();
