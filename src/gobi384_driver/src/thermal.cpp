@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 
     // Open a connection to the first detected camera by using connection string cam://0
     printf("Opening connection to cam://0\n");
-    handle = XC_OpenCamera("cam://0");
+    handle = XC_OpenCamera("gev://192.168.1.166");
 
     std::string config_file;
     nh.getParam("config_file", config_file);
