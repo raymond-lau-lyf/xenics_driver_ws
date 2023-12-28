@@ -7,7 +7,7 @@ Panels:
         - /11
         - /21
       Splitter Ratio: 0.5
-    Tree Height: 457
+    Tree Height: 363
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
