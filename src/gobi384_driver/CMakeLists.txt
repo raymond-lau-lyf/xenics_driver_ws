@@ -163,6 +163,7 @@ link_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(thermal_camera src/thermal.cpp)
+add_executable(thermal_camera_stereo src/thermal_stereo.cpp)
 
 # make sure configure headers are built before any node using them
 
@@ -177,6 +178,7 @@ add_executable(thermal_camera src/thermal.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_dependencies(thermal_camera ${PROJECT_NAME}_gencfg)
+add_dependencies(thermal_camera_stereo ${PROJECT_NAME}_gencfg)
 
 ## Specify libraries to link a library or executable target against
  target_link_libraries(thermal_camera
@@ -185,6 +187,13 @@ add_dependencies(thermal_camera ${PROJECT_NAME}_gencfg)
    ${OpenCV_LIBS}
    -lxeneth
    -lusb-1.0
+)
+target_link_libraries(thermal_camera_stereo
+  ${catkin_LIBRARIES}
+  #${Eigen_LIBRARIES}
+  ${OpenCV_LIBS}
+  -lxeneth
+  -lusb-1.0
 )
 
 add_executable(thermal_calibration src/opencv_img.cpp)
