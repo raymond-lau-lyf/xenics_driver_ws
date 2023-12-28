@@ -118,8 +118,8 @@ void cameraThreadFirst(ros::NodeHandle nh)
         dword frameSize = 0;   // The size in bytes of the raw image.
 
         // Open a connection to the first detected camera by using connection string cam://0
-        printf("[cam 1] Opening connection to cam 1 (IP:192.168.1.166)\n");
-        handle = XC_OpenCamera("gev://192.168.1.167");
+        printf("[cam 1] Opening connection to cam 1 \n");
+        handle = XC_OpenCamera("cam://0");
 
 
         if (!XC_IsInitialised(handle)) { 
@@ -139,8 +139,8 @@ void cameraThreadFirst(ros::NodeHandle nh)
             // printf("Saving settings.\n");
             // XC_SaveSettings(handle, settings);
 
-            XC_LoadSettings(handle, settings);
-            printf("[cam 1] Load Settings\n");
+            // XC_LoadSettings(handle, settings);
+            // printf("[cam 1] Load Settings\n");
 
             printf("[cam 1] Start capturing.\n");
             if ((errorCode = XC_StartCapture(handle)) != I_OK)
@@ -177,9 +177,15 @@ void cameraThreadFirst(ros::NodeHandle nh)
                         // normalize(thermal_img, img8, 0, 255, NORM_MINMAX);
                         // convertScaleAbs(img8, img8);
                         // medianBlur(img8,img8,3);
-                        cv::Mat img8_clahe;
-                        cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(1.0, cv::Size(32, 32));
-                        clahe->apply(img8, img8_clahe);
+
+
+
+                        // // clahe
+                        // cv::Mat img8_clahe;
+                        // cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(1.0, cv::Size(32, 32));
+                        // clahe->apply(img8, img8_clahe);
+
+
                         // cv::equalizeHist(img8,img8);
                         //    imshow("1",thermal_img);
                         //  waitKey(1);
@@ -189,8 +195,8 @@ void cameraThreadFirst(ros::NodeHandle nh)
                         sensor_msgs::ImagePtr output_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
                         output_msg->header.stamp = t;
 
-                        sensor_msgs::ImagePtr output_msg_clahe = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8_clahe).toImageMsg();
-                        output_msg_clahe->header.stamp = t;
+                        // sensor_msgs::ImagePtr output_msg_clahe = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8_clahe).toImageMsg();
+                        // output_msg_clahe->header.stamp = t;
 
                         sensor_msgs::ImagePtr msg_thermal = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
                         msg_thermal->header.stamp = t;
@@ -198,7 +204,7 @@ void cameraThreadFirst(ros::NodeHandle nh)
                         static long long iter_num;
                         if (iter_num % 4 == 0)
                         {
-                            pub_image_clahe1.publish(output_msg_clahe);
+                            // pub_image_clahe1.publish(output_msg_clahe);
                             pub_image1.publish(output_msg);
                             pub_image16_1.publish(msg_thermal);
                         }
