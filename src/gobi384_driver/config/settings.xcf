@@ -92,7 +92,7 @@
   <Setting brief="GevCurrentIPAddress" value="169.254.61.205" unit="" origin="camera" type="272"/>
   <Setting brief="GevCurrentSubnetMask" value="255.255.0.0" unit="" origin="camera" type="272"/>
   <Setting brief="GevCurrentDefaultGateway" value="0.0.0.0" unit="" origin="camera" type="272"/>
-  <Setting brief="GevPersistentIPAddress" value="192.168.1.166" unit="" origin="camera" type="528"/>
+  <Setting brief="GevPersistentIPAddress" value="192.168.1.167" unit="" origin="camera" type="528"/>
   <Setting brief="GevPersistentSubnetMask" value="255.255.255.0" unit="" origin="camera" type="528"/>
   <Setting brief="GevPersistentDefaultGateway" value="192.168.0.1" unit="" origin="camera" type="528"/>
   <Setting brief="GevNumberOfInterfaces" value="1" unit="" origin="camera" type="257"/>

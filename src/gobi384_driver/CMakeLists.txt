@@ -184,6 +184,7 @@ add_dependencies(thermal_camera ${PROJECT_NAME}_gencfg)
    #${Eigen_LIBRARIES}
    ${OpenCV_LIBS}
    -lxeneth
+   -lusb-1.0
 )
 
 add_executable(thermal_calibration src/opencv_img.cpp)

@@ -121,8 +121,8 @@ int main(int argc, char **argv)
     pub_image16 = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image/16bit", 100);
 
     // Open a connection to the first detected camera by using connection string cam://0
-    printf("Opening connection to cam://0\n");
-    handle = XC_OpenCamera("gev://192.168.1.166");
+    printf("Opening connection to cam 1 (IP:192.168.1.167)\n");
+    handle = XC_OpenCamera("gev://192.168.1.167");
 
 
     if (!XC_IsInitialised(handle)) { 
