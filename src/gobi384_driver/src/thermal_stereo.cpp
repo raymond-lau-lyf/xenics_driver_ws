@@ -95,7 +95,8 @@ void cameraThreadFirst(ros::NodeHandle nh)
 
         // Open a connection to the first detected camera by using connection string cam://0
         printf("[cam 1] Opening connection to cam 1 \n");
-        handle = XC_OpenCamera("cam://0");
+        // handle = XC_OpenCamera("cam://0");
+        handle = XC_OpenCamera("gev://169.254.1.1");
 
 
         if (!XC_IsInitialised(handle)) { 
@@ -241,7 +242,8 @@ void cameraThreadSecond(ros::NodeHandle nh)
 
         // Open a connection to the first detected camera by using connection string cam://0
         printf("[cam 2] Opening connection to cam 2 \n");
-        handle = XC_OpenCamera("cam://1");
+        // handle = XC_OpenCamera("cam://1");
+        handle = XC_OpenCamera("gev://169.254.2.2");
 
 
         if (!XC_IsInitialised(handle)) { 
