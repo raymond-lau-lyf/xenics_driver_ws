@@ -178,14 +178,14 @@ void cameraThreadFirst(ros::NodeHandle nh)
                         sensor_msgs::ImagePtr msg_thermal = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
                         msg_thermal->header.stamp = t;
 
-                        static long long iter_num;
-                        if (iter_num % 4 == 0)
-                        {
+                        // static long long iter_num;
+                        // if (iter_num % 4 == 0)
+                        // {
                             // pub_image_clahe1.publish(output_msg_clahe);
                             pub_image1.publish(output_msg);
                             pub_image16_1.publish(msg_thermal);
-                        }
-                        iter_num++;
+                        // }
+                        // iter_num++;
 
                         if (frameBuffer != 0)
                         {
@@ -325,14 +325,14 @@ void cameraThreadSecond(ros::NodeHandle nh)
                         sensor_msgs::ImagePtr msg_thermal = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
                         msg_thermal->header.stamp = t;
 
-                        static long long iter_num;
-                        if (iter_num % 4 == 0)
-                        {
+                        // static long long iter_num;
+                        // if (iter_num % 4 == 0)
+                        // {
                             // pub_image_clahe1.publish(output_msg_clahe);
                             pub_image2.publish(output_msg);
                             pub_image16_2.publish(msg_thermal);
-                        }
-                        iter_num++;
+                        // }
+                        // iter_num++;
 
                         if (frameBuffer != 0)
                         {
