@@ -26,6 +26,7 @@
 //---------Xeneth Camera ------
 #include "XCamera.h"
 #include "XFilters.h"
+#include "xenethSDK_trigger.h"
 
 #include "sensor_msgs/Image.h"
 #include "sensor_msgs/CompressedImage.h"
@@ -118,6 +119,13 @@ void cameraThreadFirst(ros::NodeHandle nh)
 
             // XC_LoadSettings(handle, settings);
             // printf("[cam 1] Load Settings\n");
+
+
+            /* configure camera in external triggered mode */
+            if (!SetupExternalTriggeredMode_F027(handle)) AbortSession();
+
+            /* configure camera to disable the automatic shutter calibration process */
+            if (!SetupShutterControl_F027(handle)) AbortSession();
 
             printf("[cam 1] Start capturing.\n");
             if ((errorCode = XC_StartCapture(handle)) != I_OK)
@@ -265,6 +273,14 @@ void cameraThreadSecond(ros::NodeHandle nh)
 
             // XC_LoadSettings(handle, settings);
             // printf("[cam 2] Load Settings\n");
+
+
+
+            /* configure camera in external triggered mode */
+            if (!SetupExternalTriggeredMode_F027(handle)) AbortSession();
+
+            /* configure camera to disable the automatic shutter calibration process */
+            if (!SetupShutterControl_F027(handle)) AbortSession();
 
             printf("[cam 2] Start capturing.\n");
             if ((errorCode = XC_StartCapture(handle)) != I_OK)
