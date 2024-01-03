@@ -7,8 +7,10 @@
 #include <iostream>  // std::cout
 #include <string>    // std::string, std::to_string
 #include <chrono>
+#include <deque>
 #include <ctime>
 #include <thread>
+#include <condition_variable>
 #include <mutex>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
@@ -41,6 +43,11 @@ using namespace std::chrono;
 ros::Publisher pub_image1, pub_image_clahe1, pub_image16_1;
 ros::Publisher pub_image2, pub_image_clahe2, pub_image16_2;
 
+std::deque<std::pair<std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr>,std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr>>> stereo_images;
+std::deque<std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr>> cam1_imgs_buffer;
+std::deque<std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr>> cam2_imgs_buffer;
+std::mutex mtx_stereo_images;
+std::condition_variable sig_buffer;
 
 
 string type2str(int type)
@@ -167,41 +174,16 @@ void cameraThreadFirst(ros::NodeHandle nh)
                         string ty = type2str(thermal_img.type());
                         // printf("Matrix: %s %dx%d \n", ty.c_str(), thermal_img.cols, thermal_img.rows);
                         thermal_img.convertTo(img8, CV_8UC1, 1 / 256.0); // convert image to 8bit
-                        // Mat img8;
-                        // normalize(thermal_img, img8, 0, 255, NORM_MINMAX);
-                        // convertScaleAbs(img8, img8);
-                        // medianBlur(img8,img8,3);
 
+                        sensor_msgs::ImagePtr image1_8bit_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
+                        image1_8bit_msg->header.stamp = t;
 
+                        sensor_msgs::ImagePtr image1_16bit_msg = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
+                        image1_16bit_msg->header.stamp = t;
 
-                        // // clahe
-                        // cv::Mat img8_clahe;
-                        // cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(1.0, cv::Size(32, 32));
-                        // clahe->apply(img8, img8_clahe);
+                        ROS_INFO("debug: 1 %lf",image1_16bit_msg->header.stamp.toSec());
 
-
-                        // cv::equalizeHist(img8,img8);
-                        //    imshow("1",thermal_img);
-                        //  waitKey(1);
-
-                        
-                        sensor_msgs::ImagePtr output_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
-                        output_msg->header.stamp = t;
-
-                        // sensor_msgs::ImagePtr output_msg_clahe = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8_clahe).toImageMsg();
-                        // output_msg_clahe->header.stamp = t;
-
-                        sensor_msgs::ImagePtr msg_thermal = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
-                        msg_thermal->header.stamp = t;
-
-                        // static long long iter_num;
-                        // if (iter_num % 4 == 0)
-                        // {
-                            // pub_image_clahe1.publish(output_msg_clahe);
-                            pub_image1.publish(output_msg);
-                            pub_image16_1.publish(msg_thermal);
-                        // }
-                        // iter_num++;
+                        cam1_imgs_buffer.push_back(std::make_pair(image1_8bit_msg,image1_16bit_msg));
 
                         if (frameBuffer != 0)
                         {
@@ -331,41 +313,17 @@ void cameraThreadSecond(ros::NodeHandle nh)
                         string ty = type2str(thermal_img.type());
                         // printf("Matrix: %s %dx%d \n", ty.c_str(), thermal_img.cols, thermal_img.rows);
                         thermal_img.convertTo(img8, CV_8UC1, 1 / 256.0); // convert image to 8bit
-                        // Mat img8;
-                        // normalize(thermal_img, img8, 0, 255, NORM_MINMAX);
-                        // convertScaleAbs(img8, img8);
-                        // medianBlur(img8,img8,3);
+                        
+                        sensor_msgs::ImagePtr image2_8bit_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
+                        image2_8bit_msg->header.stamp = t;
 
+                        sensor_msgs::ImagePtr image2_16bit_msg = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
+                        image2_16bit_msg->header.stamp = t;
 
-
-                        // // clahe
-                        // cv::Mat img8_clahe;
-                        // cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE(1.0, cv::Size(32, 32));
-                        // clahe->apply(img8, img8_clahe);
-
-
-                        // cv::equalizeHist(img8,img8);
-                        //    imshow("1",thermal_img);
-                        //  waitKey(1);
+                        ROS_INFO("debug: 2 %lf",image2_16bit_msg->header.stamp.toSec());
 
                         
-                        sensor_msgs::ImagePtr output_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
-                        output_msg->header.stamp = t;
-
-                        // sensor_msgs::ImagePtr output_msg_clahe = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8_clahe).toImageMsg();
-                        // output_msg_clahe->header.stamp = t;
-
-                        sensor_msgs::ImagePtr msg_thermal = cv_bridge::CvImage(std_msgs::Header(), "mono16", thermal_img).toImageMsg();
-                        msg_thermal->header.stamp = t;
-
-                        // static long long iter_num;
-                        // if (iter_num % 4 == 0)
-                        // {
-                            // pub_image_clahe1.publish(output_msg_clahe);
-                            pub_image2.publish(output_msg);
-                            pub_image16_2.publish(msg_thermal);
-                        // }
-                        // iter_num++;
+                        cam2_imgs_buffer.push_back(std::make_pair(image2_8bit_msg,image2_16bit_msg));
 
                         if (frameBuffer != 0)
                         {
@@ -410,6 +368,79 @@ void cameraThreadSecond(ros::NodeHandle nh)
     } 
 }
 
+void pubThread(ros::NodeHandle nh)
+{
+    while(ros::ok())
+    {
+        if(stereo_images.empty())
+        {
+            continue;
+        }
+        else
+        {
+            mtx_stereo_images.lock();
+            pub_image1.publish(stereo_images.front().first.first);
+            pub_image16_1.publish(stereo_images.front().first.second);
+            pub_image2.publish(stereo_images.front().second.first);
+            pub_image16_2.publish(stereo_images.front().second.second);
+            stereo_images.pop_front();
+            mtx_stereo_images.unlock();
+        }
+    }
+}
+
+void syncThread(ros::NodeHandle nh)
+{
+    while(ros::ok())
+    {
+        if(cam1_imgs_buffer.empty() || cam2_imgs_buffer.empty())
+        {
+            continue;
+        }
+        else
+        {   
+            if(cam1_imgs_buffer.front().first->header.stamp.toSec()<=cam2_imgs_buffer.front().first->header.stamp.toSec())
+            {
+                if(cam2_imgs_buffer.front().first->header.stamp.toSec() - cam1_imgs_buffer.front().first->header.stamp.toSec() < 0.02)
+                {
+                    // std::cout<<"1"<<std::endl<<std::endl;
+                    cam1_imgs_buffer.front().first->header.stamp =  cam2_imgs_buffer.front().first->header.stamp;
+                    cam1_imgs_buffer.front().second->header.stamp =  cam2_imgs_buffer.front().second->header.stamp;
+                    mtx_stereo_images.lock();
+                    stereo_images.push_back(std::make_pair(cam1_imgs_buffer.front(),cam2_imgs_buffer.front()));
+                    mtx_stereo_images.unlock();
+                    cam1_imgs_buffer.pop_front();
+                    cam2_imgs_buffer.pop_front();
+                }
+                else
+                {
+                    cam1_imgs_buffer.pop_front();
+                    continue;
+                }
+            }
+            else
+            {
+                if(cam1_imgs_buffer.front().first->header.stamp.toSec() - cam2_imgs_buffer.front().first->header.stamp.toSec() < 0.02)
+                {
+                    // std::cout<<"2"<<std::endl<<std::endl;
+                    cam2_imgs_buffer.front().first->header.stamp =  cam1_imgs_buffer.front().first->header.stamp;
+                    cam2_imgs_buffer.front().second->header.stamp =  cam1_imgs_buffer.front().second->header.stamp;
+                    mtx_stereo_images.lock();
+                    stereo_images.push_back(std::make_pair(cam1_imgs_buffer.front(),cam2_imgs_buffer.front()));
+                    mtx_stereo_images.unlock();
+                    cam1_imgs_buffer.pop_front();
+                    cam2_imgs_buffer.pop_front();
+                }
+                else
+                {
+                    cam2_imgs_buffer.pop_front();
+                    continue;
+                }
+            }
+        }
+    }
+
+}
 
 int main(int argc, char **argv)
 {
@@ -429,9 +460,13 @@ int main(int argc, char **argv)
 
    
 
+    std::thread pubTopicThread(pubThread,nh);
+    std::thread syncimgThread(syncThread,nh);
     std::thread firstCameraThread(cameraThreadFirst,nh);
     std::thread secondCameraThread(cameraThreadSecond,nh);
 
+    pubTopicThread.join();
+    syncimgThread.join();
     firstCameraThread.join();
     secondCameraThread.join();
 
