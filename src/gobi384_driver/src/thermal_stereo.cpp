@@ -150,7 +150,14 @@ void cameraThreadFirst(ros::NodeHandle nh)
                     }
                     else
                     {
-                        ros::Time t = ros::Time::now();
+                        // ros::Time t = ros::Time::now();
+                        const auto p0 = std::chrono::time_point<std::chrono::high_resolution_clock>{};
+                        const auto p3 = std::chrono::high_resolution_clock::now();
+
+                        auto tstamp = p3 - p0;
+                        int32_t sec = std::chrono::duration_cast<std::chrono::seconds>(tstamp).count();
+                        int32_t nsec = std::chrono::duration_cast<std::chrono::nanoseconds>(tstamp).count() % 1000000000UL;
+                        ros::Time t(sec, nsec);
 
                         int h = XC_GetHeight(handle);
                         int w = XC_GetWidth(handle);
@@ -306,7 +313,15 @@ void cameraThreadSecond(ros::NodeHandle nh)
                     }
                     else
                     {
-                        ros::Time t = ros::Time::now();
+                        // ros::Time t = ros::Time::now();
+                        const auto p0 = std::chrono::time_point<std::chrono::high_resolution_clock>{};
+                        const auto p3 = std::chrono::high_resolution_clock::now();
+
+                        auto tstamp = p3 - p0;
+                        int32_t sec = std::chrono::duration_cast<std::chrono::seconds>(tstamp).count();
+                        int32_t nsec = std::chrono::duration_cast<std::chrono::nanoseconds>(tstamp).count() % 1000000000UL;
+                        ros::Time t(sec, nsec);
+
 
                         int h = XC_GetHeight(handle);
                         int w = XC_GetWidth(handle);
