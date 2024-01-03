@@ -150,6 +150,8 @@ void cameraThreadFirst(ros::NodeHandle nh)
                     }
                     else
                     {
+                        ros::Time t = ros::Time::now();
+
                         int h = XC_GetHeight(handle);
                         int w = XC_GetWidth(handle);
                         thermal_img =
@@ -175,7 +177,6 @@ void cameraThreadFirst(ros::NodeHandle nh)
                         //    imshow("1",thermal_img);
                         //  waitKey(1);
 
-                        ros::Time t = ros::Time::now();
                         
                         sensor_msgs::ImagePtr output_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
                         output_msg->header.stamp = t;
@@ -305,6 +306,8 @@ void cameraThreadSecond(ros::NodeHandle nh)
                     }
                     else
                     {
+                        ros::Time t = ros::Time::now();
+
                         int h = XC_GetHeight(handle);
                         int w = XC_GetWidth(handle);
                         thermal_img =
@@ -330,7 +333,6 @@ void cameraThreadSecond(ros::NodeHandle nh)
                         //    imshow("1",thermal_img);
                         //  waitKey(1);
 
-                        ros::Time t = ros::Time::now();
                         
                         sensor_msgs::ImagePtr output_msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", img8).toImageMsg();
                         output_msg->header.stamp = t;
