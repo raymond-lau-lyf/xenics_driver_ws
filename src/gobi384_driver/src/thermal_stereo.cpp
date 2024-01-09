@@ -33,6 +33,7 @@
 #include "sensor_msgs/Image.h"
 #include "sensor_msgs/CompressedImage.h"
 #include "sensor_msgs/image_encodings.h"
+#include <cv_bridge/cv_bridge.h>
 
 using namespace std;
 using namespace cv;
@@ -42,8 +43,51 @@ using namespace std::chrono;
 // image_transport::Publisher image_pub;
 ros::Publisher pub_image1, pub_image_clahe1, pub_image16_1;
 ros::Publisher pub_image2, pub_image_clahe2, pub_image16_2;
+ros::Publisher pub_joint_image;
 
-std::deque<std::pair<std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr>,std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr>>> stereo_images;
+
+struct stereo_image_set{
+    std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr> imgs_0;                                                                                                                                                                                                                                                                                                                                   ;                                                                                                                                                                                                                
+    std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr> imgs_1;
+    sensor_msgs::ImagePtr joint_image;                                                                                                                                                                                                                
+};
+
+sensor_msgs::ImagePtr makeJointImage(const sensor_msgs::ImagePtr &input_left,const sensor_msgs::ImagePtr &input_right)
+{
+    sensor_msgs::ImagePtr ret = input_right;
+    cv::Mat left_cvimg,right_cvimg;
+    cv_bridge::CvImagePtr cv_ptr_left,cv_ptr_right,cv_ptr_joint;
+    try
+    {
+        cv_ptr_left = cv_bridge::toCvCopy(input_left, sensor_msgs::image_encodings::MONO8);
+        cv_ptr_right = cv_bridge::toCvCopy(input_right, sensor_msgs::image_encodings::MONO8);
+    }
+    catch (cv_bridge::Exception& e)
+    {
+        ROS_ERROR("cv_bridge exception: %s", e.what());
+        return ret;
+    }
+
+    left_cvimg = cv_ptr_left->image;
+    right_cvimg = cv_ptr_right->image;
+
+    // Create a new image with the combined width
+    cv::Mat joint_cvimg(left_cvimg.rows, left_cvimg.cols + right_cvimg.cols, left_cvimg.type());
+
+    // Copy the left and right images into the combined image
+    left_cvimg.copyTo(joint_cvimg(cv::Rect(0, 0, left_cvimg.cols, left_cvimg.rows)));
+    right_cvimg.copyTo(joint_cvimg(cv::Rect(left_cvimg.cols, 0, left_cvimg.cols, right_cvimg.rows)));
+
+    cv_bridge::CvImage cvImage;
+    cvImage.encoding = "mono8";
+    cvImage.image = joint_cvimg;
+    ret = cvImage.toImageMsg();
+
+    return ret;
+}
+
+
+std::deque<struct stereo_image_set> stereo_images;
 std::deque<std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr>> cam1_imgs_buffer;
 std::deque<std::pair<sensor_msgs::ImagePtr,sensor_msgs::ImagePtr>> cam2_imgs_buffer;
 std::mutex mtx_stereo_images;
@@ -379,10 +423,13 @@ void pubThread(ros::NodeHandle nh)
         else
         {
             mtx_stereo_images.lock();
-            pub_image1.publish(stereo_images.front().first.first);
-            pub_image16_1.publish(stereo_images.front().first.second);
-            pub_image2.publish(stereo_images.front().second.first);
-            pub_image16_2.publish(stereo_images.front().second.second);
+
+            pub_image1.publish(stereo_images.front().imgs_0.first);
+            pub_image16_1.publish(stereo_images.front().imgs_0.second);
+            pub_image2.publish(stereo_images.front().imgs_1.first);
+            pub_image16_2.publish(stereo_images.front().imgs_1.second);
+            pub_joint_image.publish(stereo_images.front().joint_image);
+
             stereo_images.pop_front();
             mtx_stereo_images.unlock();
         }
@@ -406,8 +453,12 @@ void syncThread(ros::NodeHandle nh)
                     // std::cout<<"1"<<std::endl<<std::endl;
                     cam1_imgs_buffer.front().first->header.stamp =  cam2_imgs_buffer.front().first->header.stamp;
                     cam1_imgs_buffer.front().second->header.stamp =  cam2_imgs_buffer.front().second->header.stamp;
+                    struct stereo_image_set stereo_image;
+                    stereo_image.imgs_0=cam1_imgs_buffer.front();
+                    stereo_image.imgs_1=cam2_imgs_buffer.front();
+                    stereo_image.joint_image=makeJointImage(stereo_image.imgs_0.first,stereo_image.imgs_1.first);
                     mtx_stereo_images.lock();
-                    stereo_images.push_back(std::make_pair(cam1_imgs_buffer.front(),cam2_imgs_buffer.front()));
+                    stereo_images.push_back(stereo_image);
                     mtx_stereo_images.unlock();
                     cam1_imgs_buffer.pop_front();
                     cam2_imgs_buffer.pop_front();
@@ -425,8 +476,12 @@ void syncThread(ros::NodeHandle nh)
                     // std::cout<<"2"<<std::endl<<std::endl;
                     cam2_imgs_buffer.front().first->header.stamp =  cam1_imgs_buffer.front().first->header.stamp;
                     cam2_imgs_buffer.front().second->header.stamp =  cam1_imgs_buffer.front().second->header.stamp;
+                    struct stereo_image_set stereo_image;
+                    stereo_image.imgs_0=cam1_imgs_buffer.front();
+                    stereo_image.imgs_1=cam2_imgs_buffer.front();
+                    stereo_image.joint_image=makeJointImage(stereo_image.imgs_0.first,stereo_image.imgs_1.first);
                     mtx_stereo_images.lock();
-                    stereo_images.push_back(std::make_pair(cam1_imgs_buffer.front(),cam2_imgs_buffer.front()));
+                    stereo_images.push_back(stereo_image);
                     mtx_stereo_images.unlock();
                     cam1_imgs_buffer.pop_front();
                     cam2_imgs_buffer.pop_front();
@@ -458,7 +513,7 @@ int main(int argc, char **argv)
     pub_image_clahe2 = nh.advertise<sensor_msgs::Image>("/thermal/cam2/image8bit_clahe", 100);
     pub_image16_2 = nh.advertise<sensor_msgs::Image>("/thermal/cam2/image16bit", 100);
 
-   
+    pub_joint_image = nh.advertise<sensor_msgs::Image>("/thermal/joint", 100);
 
     std::thread pubTopicThread(pubThread,nh);
     std::thread syncimgThread(syncThread,nh);
