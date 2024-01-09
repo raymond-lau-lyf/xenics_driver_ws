@@ -449,14 +449,14 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     image_transport::ImageTransport it(nh);
     // image_pub = it.advertise("/convert_image", 100);
-    pub_image1 = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image/8bit", 100);
-    pub_image_clahe1 = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image/8bit_clahe", 100);
-    pub_image16_1 = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image/16bit", 100);
+    pub_image1 = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image8bit", 100);
+    pub_image_clahe1 = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image8bit_clahe", 100);
+    pub_image16_1 = nh.advertise<sensor_msgs::Image>("/thermal/cam1/image16bit", 100);
     
 
-    pub_image2 = nh.advertise<sensor_msgs::Image>("/thermal/cam2/image/8bit", 100);
-    pub_image_clahe2 = nh.advertise<sensor_msgs::Image>("/thermal/cam2/image/8bit_clahe", 100);
-    pub_image16_2 = nh.advertise<sensor_msgs::Image>("/thermal/cam2/image/16bit", 100);
+    pub_image2 = nh.advertise<sensor_msgs::Image>("/thermal/cam2/image8bit", 100);
+    pub_image_clahe2 = nh.advertise<sensor_msgs::Image>("/thermal/cam2/image8bit_clahe", 100);
+    pub_image16_2 = nh.advertise<sensor_msgs::Image>("/thermal/cam2/image16bit", 100);
 
    
 
