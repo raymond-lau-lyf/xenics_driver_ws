@@ -176,7 +176,7 @@ void cameraThreadFirst(ros::NodeHandle nh)
             if (!SetupExternalTriggeredMode_F027(handle)) AbortSession();
 
             /* configure camera to disable the automatic shutter calibration process */
-            if (!SetupShutterControl_F027(handle)) AbortSession();
+            // if (!SetupShutterControl_F027(handle)) AbortSession();
 
             printf("[cam 1] Start capturing.\n");
             if ((errorCode = XC_StartCapture(handle)) != I_OK)
@@ -314,7 +314,7 @@ void cameraThreadSecond(ros::NodeHandle nh)
             if (!SetupExternalTriggeredMode_F027(handle)) AbortSession();
 
             /* configure camera to disable the automatic shutter calibration process */
-            if (!SetupShutterControl_F027(handle)) AbortSession();
+            // if (!SetupShutterControl_F027(handle)) AbortSession();
 
             printf("[cam 2] Start capturing.\n");
             if ((errorCode = XC_StartCapture(handle)) != I_OK)
@@ -457,6 +457,7 @@ void syncThread(ros::NodeHandle nh)
                     stereo_image.imgs_0=cam1_imgs_buffer.front();
                     stereo_image.imgs_1=cam2_imgs_buffer.front();
                     stereo_image.joint_image=makeJointImage(stereo_image.imgs_0.first,stereo_image.imgs_1.first);
+                    stereo_image.joint_image->header.stamp = cam2_imgs_buffer.front().first->header.stamp;
                     mtx_stereo_images.lock();
                     stereo_images.push_back(stereo_image);
                     mtx_stereo_images.unlock();
@@ -480,6 +481,7 @@ void syncThread(ros::NodeHandle nh)
                     stereo_image.imgs_0=cam1_imgs_buffer.front();
                     stereo_image.imgs_1=cam2_imgs_buffer.front();
                     stereo_image.joint_image=makeJointImage(stereo_image.imgs_0.first,stereo_image.imgs_1.first);
+                    stereo_image.joint_image->header.stamp = cam1_imgs_buffer.front().first->header.stamp;
                     mtx_stereo_images.lock();
                     stereo_images.push_back(stereo_image);
                     mtx_stereo_images.unlock();
